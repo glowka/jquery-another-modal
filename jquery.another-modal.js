@@ -196,6 +196,7 @@ jQuery.fn.extend({
                 modal.setDimensions();
                 if(hidden)
                     modal.show();
+                options.showComplete.apply(this);
                 break;
             case 'hide':
                 if(modalContentNode == $contentNode[0]) {

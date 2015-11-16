@@ -1,6 +1,5 @@
-// v1.0.3
+// v1.0.4
 // by Tomasz Glowka
-
 
 /*
     DOCUMENTATION
@@ -122,11 +121,10 @@
 // use jQuery.modal({option1: val1, option2: val2})
 // or  jQuery.modal(option1, val1).modal(option2, val2)
 // to configure it, but don't touch it here
-
 var defaults = {
         overlay: {
-            background: '#ffffff',
-            opacity: '0.6'
+            background: '#000000',
+            opacity: '0.3'
         },
         center: [true, false],
         position: [0, 100],
@@ -177,8 +175,6 @@ var  subContainerStyle = {
         'z-index': '99999'
     };
 
-
-
 jQuery.fn.extend({
     modal: function(cmd, params) {
         params = typeof params !== 'undefined' ? params : {};
@@ -206,8 +202,10 @@ jQuery.fn.extend({
                 break;
             case 'refresh':
                 if(modalContentNode == $contentNode[0]) {
-                    if(!hidden)
+                    if(!hidden) {
                         modal.setDimensions();
+                        modal.appendHideButton();
+                    }
                 }
                 break;
             case 'resize':
@@ -232,8 +230,6 @@ jQuery.fn.extend({
         return $this;
     }
 });
-
-
 
 jQuery.extend({
     modal: function(cmd, params){
@@ -271,8 +267,6 @@ jQuery.extend({
         return this;
     }
 });
-
-
 
 var hidden = true,
     defaultsBackup = jQuery.extend(true, {}, defaults),
@@ -342,24 +336,29 @@ var modal = {
         $container.css(containerStyle);
         $hideButton.css(hideButtonStyle);
 
-        // load content
+        // load (new) content
         if($contentNode.get(0) != newContentNode) {
             // if modal is not empty ($contentNode selector has non-zero length),
             // return it content to previous parent
             if($contentNode.length) {
                 // old node is back
                 $contentParent.append($contentNode.get(0));
-                $hideButton.detach();
                 $contentNode.hide();
             }
 
             // move new content and show modal
             $contentNode = jQuery(newContentNode);
             $contentParent = $contentNode.parent();
-            $contentNode.append($hideButton);
-            $container.append($contentNode.get(0));
+            $container.append($contentNode.first());
             $contentNode.show();
         }
+
+        modal.appendHideButton();
+    },
+
+    appendHideButton: function(){
+        $hideButton.detach();
+        $contentNode.append($hideButton);
     },
 
     setDimensions: function() {
